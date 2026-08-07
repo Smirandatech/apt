@@ -3,11 +3,23 @@ import { google } from "googleapis";
 import { Readable } from "stream";
 import path from "path";
 
-// Load your service account credentials
-const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(__dirname, "../../apts-456214-b1990b89d6ae.json"),
-  scopes: ["https://www.googleapis.com/auth/drive"],
-});
+// Prefer env JSON on Vercel; fall back to local key file for Railway/dev.
+function getGoogleAuth() {
+  const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (json) {
+    return new google.auth.GoogleAuth({
+      credentials: JSON.parse(json),
+      scopes: ["https://www.googleapis.com/auth/drive"],
+    });
+  }
+
+  return new google.auth.GoogleAuth({
+    keyFile: path.join(__dirname, "../../apts-456214-b1990b89d6ae.json"),
+    scopes: ["https://www.googleapis.com/auth/drive"],
+  });
+}
+
+const auth = getGoogleAuth();
 
 export const drive = google.drive({ version: "v3", auth });
 
