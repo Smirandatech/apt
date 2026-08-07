@@ -8,16 +8,31 @@ import { authenticateToken, AuthenticatedRequest } from "../middleware/auth";
 
 const router = express.Router();
 
+function dbErrorMessage(err: unknown): string {
+  if (!err || typeof err !== "object") return "Registration failed";
+  const e = err as { code?: string; message?: string; address?: string };
+  if (e.code === "ECONNREFUSED" || e.code === "ENOTFOUND") {
+    return "Database unavailable. On Vercel, DATABASE_URL must be a hosted Postgres URL (not localhost).";
+  }
+  if (e.code === "23505") return "Username already exists";
+  if (e.code === "23514") return "Invalid role";
+  return e.message || "Registration failed";
+}
+
 router.post("/register", async (req: Request, res: Response): Promise<void> => {
   const { username, password, role } = req.body;
-  if(role === 'admin') {
+  if (!username || !password || !role) {
+    res.status(400).json({ error: "username, password, and role are required" });
+    return;
+  }
+  if (role === "admin") {
     res.status(403).json({ error: "Admin role is not allowed" });
     return;
   }
   try {
     const hash = await bcrypt.hash(password, 10);
     const result = await pool.query(
-      "INSERT INTO Users (username, password_hash, role) VALUES ($1, $2, $3) RETURNING id, username, role",
+      "INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3) RETURNING id, username, role",
       [username, hash, role]
     );
     const user: User = result.rows[0];
@@ -27,7 +42,12 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
       role: user.role,
     });
   } catch (err) {
-    res.status(400).json({ error: err });
+    const status =
+      err && typeof err === "object" && "code" in err && (err as { code?: string }).code === "ECONNREFUSED"
+        ? 503
+        : 400;
+    console.error("Register failed:", err);
+    res.status(status).json({ error: dbErrorMessage(err) });
   }
 });
 
