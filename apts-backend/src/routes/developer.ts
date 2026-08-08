@@ -40,13 +40,13 @@ router.post(
       }
 
       // Upload file to Google Drive
-      const fileUrl = await uploadToDrive(
-        req.file.buffer,
-        req.file.originalname,
-        "18xm2sSKhI9azGoMKC6r0dTIDG3HVBNVl",
-        true
-      );
-      // const fileUrl = "https://drive.google.com/uc?id=18BMvDrl8rrAUdDol3iWF69YUrKjHqLcy&export=download";
+      // const fileUrl = await uploadToDrive(
+      //   req.file.buffer,
+      //   req.file.originalname,
+      //   "18xm2sSKhI9azGoMKC6r0dTIDG3HVBNVl",
+      //   true
+      // );
+      const fileUrl = "https://drive.google.com/uc?id=18BMvDrl8rrAUdDol3iWF69YUrKjHqLcy&export=download";
 
       const result = await pool.query(
         `INSERT INTO resume_templates (name, file_url, developer_id, company_count, prompt, demographics)
