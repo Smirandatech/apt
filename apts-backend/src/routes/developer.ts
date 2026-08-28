@@ -46,7 +46,7 @@ router.post(
       //   "18xm2sSKhI9azGoMKC6r0dTIDG3HVBNVl",
       //   true
       // );
-      const fileUrl = "https://drive.google.com/uc?id=18BMvDrl8rrAUdDol3iWF69YUrKjHqLcy&export=download";
+      const fileUrl = "https://drive.google.com/uc?id=1LEo7c97sdx6W49fxV4s9NBvC-RY1Ogyz&export=download";
 
       const result = await pool.query(
         `INSERT INTO resume_templates (name, file_url, developer_id, company_count, prompt, demographics)
