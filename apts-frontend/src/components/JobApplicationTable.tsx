@@ -477,7 +477,7 @@ export default function JobApplicationTable({ refresh, endpoint }: Props) {
                   variant="outline"
                   size="sm"
                   onClick={() => handleEdit(application)}
-                  disabled={user?.role === 'bidder'}
+                  // disabled={user?.role === 'bidder'}
                   className="h-8 px-3 text-xs font-medium"
                 >
                   Edit
