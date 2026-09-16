@@ -265,7 +265,7 @@ router.post(
       // 🧠  MODEL LOGIC SWITCH
       // -------------------------------
       let parsed: unknown;
-
+      
       if (model.startsWith("gpt-4")) {
         if (!apiKey) {
           res.status(400).json({
@@ -305,7 +305,7 @@ router.post(
         const response = await axios.post(
           "https://api.deepseek.com/v1/chat/completions",
           {
-            model: "deepseek-v4-flash",
+            model: "deepseek-v4-pro",
             messages,
             temperature: 0,
             // If DeepSeek supports JSON mode, this helps. If not, it is ignored.
@@ -558,7 +558,7 @@ router.post(
       const response = await axios.post(
         "https://api.deepseek.com/v1/chat/completions",
         {
-          model: "deepseek-chat",
+          model: "deepseek-v4-pro",
           messages,
           temperature: 0.7, // Slightly creative for cover letters
           response_format: { type: "json_object" },
